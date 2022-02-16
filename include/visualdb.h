@@ -4,8 +4,14 @@
 #pragma once
 
 #include <iostream>
-#include "glad/glad.h"
-#include <GLFW/glfw3.h>
+#include <map>
+
+//fontisms
 #include <ft2build.h>
 #include FT_FREETYPE_H
+
+//glisms
+#include "glad/glad.h"
+#include <GLFW/glfw3.h>
+#include <glm/vec2.hpp>
 
