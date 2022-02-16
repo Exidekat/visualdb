@@ -27,7 +27,7 @@ int main() {
     glfwMakeContextCurrent(window);
 	gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 
-	glClearColor(1,0,0,1);
+	glClearColor(1,0.65,0.15,0.9);
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))

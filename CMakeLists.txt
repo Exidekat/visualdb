@@ -6,11 +6,13 @@ cmake_minimum_required (VERSION 3.8)
 project ("visualdb")
 
 add_subdirectory("bin/glfw")
+add_subdirectory("bin/freetype")
 
 # Add source to this project's executable.
 add_executable (visualdb "src/visualdb.cpp" "src/glad.c")
 target_include_directories(visualdb PUBLIC include/)
 target_link_libraries(visualdb PUBLIC glfw::glfw)
-
+# find_package(freetype REQUIRED)
+target_link_libraries(visualdb PUBLIC freetype::freetype)
 
 # TODO: Add tests and install targets if needed.
