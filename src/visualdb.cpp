@@ -147,6 +147,34 @@ void Shader::setFloat(const std::string& name, float value) const
     glUniform1f(glGetUniformLocation(ID, name.c_str()), value);
 }
 
+void window_size_callback(GLFWwindow* window, int width, int height)
+{
+    int n_width, n_height;
+    /* Keep window size at something kosher */
+    if (width <= 1280) {
+        n_width = 1280;
+        n_height = 720;
+    }
+    else if (width <= 1920)  {
+        n_width = width;
+        n_height = width * 1080 / 1920;
+    }
+    else if (width <= 2560) {
+        n_width = width;
+        n_height = width * 1440 / 2560;
+    }
+    else {
+        n_width = width;
+        n_height = height;
+    }
+    std::cout << n_width << n_height << std::endl;
+    glfwSetWindowSize(window, n_width, n_height);
+
+    /* Reset glViewport with new values */
+    glfwGetFramebufferSize(window, &fbw, &fbh);
+    glViewport(0, 0, fbw, fbh);
+}
+
 int main() {
 	std::cout << "Hello VDB." << std::endl;
 	GLFWwindow* window;
@@ -172,6 +200,7 @@ int main() {
     /* Make the window's context current */
     glfwMakeContextCurrent(window);
 	gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+    glfwGetFramebufferSize(window, &fbw, &fbh);
 
     int flags; glGetIntegerv(GL_CONTEXT_FLAGS, &flags);
     if (flags & GL_CONTEXT_FLAG_DEBUG_BIT)
@@ -279,17 +308,14 @@ int main() {
     Shader shader(g_vertexShaderSource, g_fragmentShaderSource);
     glProgramUniformMatrix4fv(shader.ID, glGetUniformLocation(shader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
-
-    int fbw, fbh;
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
-        glfwGetFramebufferSize(window, &fbw, &fbh);
-        // glViewport(0, 0, fbw, fbh);
+        /* Check for window resize */
+        glfwSetWindowSizeCallback(window, window_size_callback);
 
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT);
-
 
         RenderText(shader, "This is the frame buffer size: " + std::to_string(fbw) + ", " + std::to_string(fbh), 25.0f, 25.0f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
         RenderText(shader, "haydon brain go rbbrrbrb crk crash beep", 540.0f, 570.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f));

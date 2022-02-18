@@ -20,6 +20,9 @@
 #include <string>
 #include <fstream>
 #include <sstream>
+
+int fbw, fbh;
+
 class Shader
 {
 public:
