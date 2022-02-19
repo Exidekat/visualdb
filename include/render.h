@@ -84,6 +84,8 @@ public:
     void enableAttribute(size_t i);
     void disableAttribute(size_t i);
 
+    void bind() const;
+
     [[nodiscard]] uint32_t getHandle() const noexcept;
 
 private:

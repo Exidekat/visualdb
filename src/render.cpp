@@ -193,6 +193,10 @@ void VertexArray::disableAttribute(size_t i) {
     glDisableVertexArrayAttrib(m_Handle, i);
 }
 
+void VertexArray::bind() const {
+    glBindVertexArray(m_Handle);
+}
+
 uint32_t VertexArray::getHandle() const noexcept {
     return m_Handle;
 }
