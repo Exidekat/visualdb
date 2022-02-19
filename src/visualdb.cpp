@@ -72,6 +72,8 @@ void window_size_callback(GLFWwindow* window, int width, int height)
     glViewport(0, 0, fbw, fbh);
 }
 
+glm::vec3 rgbByteToFloat(float r, float g, float b) { return glm::vec3(r / 255.0f, g / 255.0f, b / 255.0f); }
+
 int main() {
 	std::cout << "Hello VDB." << std::endl;
 	GLFWwindow* window;
@@ -158,18 +160,23 @@ int main() {
     Shader shapeShader("shaders/coloredshape.vs.glsl", "shaders/coloredshape.fs.glsl");
     glProgramUniformMatrix4fv(shapeShader.ID, glGetUniformLocation(shapeShader.ID, "uProjection"), 1, GL_FALSE, glm::value_ptr(projection));
 
-    /* Loop until the user closes the window */
-    while (!glfwWindowShouldClose(window))
-    {
-        glfwSetWindowSizeCallback(window, window_size_callback); //Check for window resize
+    glm::vec3 top_rgb       = rgbByteToFloat(75.f, 220.f, 205.f);       //teal
+    glm::vec3 middle_rgb    = rgbByteToFloat(220.f, 75.f, 50.f);        //velvet
+    glm::vec3 bottom_rgb    = rgbByteToFloat(162.f, 220.f, 75.f);       //limegreen
 
-        /* Render here */
-        glClear(GL_COLOR_BUFFER_BIT);
-
-        RenderText(UbuntuB_Characters, glyphShader, "framebuffer size: " + std::to_string(fbw) + "px, " + std::to_string(fbh) + "px", 20.0f, 20.0f, 0.8f, glm::vec3(0.5f, 0.8f, 0.5f));
-        RenderText(MKDS_Characters, glyphShader, "HAYDON BRAIN GO RBBRRBRB CRK CRASH BEEP", 100.0f, 620.0f, 1.0f, glm::vec3(0.3f, 0.7f, 0.9f));
-        //RenderText(UbuntuB_Characters, glyphShader, "HaYDoN BRain Go RBBRRBRB CRK CrASh bEEP", 250.0f, 550.0f, 1.0f, glm::vec3(0.3f, 0.7f, 0.9f));
-        //RenderText(UbuntuM_Characters, glyphShader, "HaYDoN BRain Go RBBRRBRB CRK CrASh bEEP", 250.0f, 400.0f, 1.0f, glm::vec3(0.3f, 0.7f, 0.9f));
+    std::string query;  // Active VDB query. should be defined by lua speech 'set query'
+    /* Loop until the user closes the window */                                                  //cheatsheet notes: 1280x720 min res
+    while (!glfwWindowShouldClose(window))                                                       //
+    {                                                                                            //
+        glfwSetWindowSizeCallback(window, window_size_callback); //Check for window resize       //
+                                                                                                 //
+        /* Render here */                                                                        //
+        glClear(GL_COLOR_BUFFER_BIT);                                                            //MKDS max 40 characters at 1.0f scale
+                                                                                                 
+        RenderText(MKDS_Characters, glyphShader, "WELCOME TO VDB", {Align::Center, Align::Top}, 640.0f, 695.0f, 1.0f, top_rgb);
+        RenderText(UbuntuB_Characters, glyphShader, "The main text goin on here.", { Align::Center, Align::Center }, 640.0f, 360.0f, 1.0f, middle_rgb);
+        RenderText(UbuntuM_Characters, glyphShader, "current query: (lua stuffs goin on here)" + query, { Align::Left, Align::Bottom }, 20.0f, 45.0f, 0.5f, bottom_rgb);
+        RenderText(UbuntuM_Characters, glyphShader, "framebuffer size: " + std::to_string(fbw) + "px, " + std::to_string(fbh) + "px", { Align::Left, Align::Bottom }, 20.0f, 20.0f, 0.5f, bottom_rgb);
 
         shapeShader.use();
         glUniform2f(glGetUniformLocation(shapeShader.ID, "uCenter"), 200, 200);
