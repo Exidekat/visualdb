@@ -34,7 +34,6 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath)
     }
     const char* vShaderCode = vertexCode.c_str();
     const char* fShaderCode = fragmentCode.c_str();
-
     // 2. compile shaders
     unsigned int vertex, fragment;
     int success;
@@ -61,7 +60,6 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath)
         glGetShaderInfoLog(fragment, 512, NULL, infoLog);
         std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
     };
-
     // shader Program
     ID = glCreateProgram();
     glAttachShader(ID, vertex);
@@ -74,7 +72,6 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath)
         glGetProgramInfoLog(ID, 512, NULL, infoLog);
         std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
     }
-
     // delete the shaders as they're linked into our program now and no longer necessary
     glDeleteShader(vertex);
     glDeleteShader(fragment);
@@ -103,14 +100,12 @@ void RenderText(std::map<char, Character> fCharacters,
                 const std::string& text,
                 const std::array<Align, 2>& align,
                 float x, float y, float scale,
-                glm::vec3 color)
-{
+                glm::vec3 color) {
     // activate corresponding render state	
     s.use();
     glUniform3f(glGetUniformLocation(s.ID, "textColor"), color.x, color.y, color.z);
     glActiveTexture(GL_TEXTURE0);
     glBindVertexArray(VAO);
-
     // iterate through all characters
     std::string::const_iterator c;
     switch (align[0]) {
@@ -133,21 +128,20 @@ void RenderText(std::map<char, Character> fCharacters,
         float originLineShift = 0.0f;
         for (c = text.begin(); c != text.end(); c++) {
             Character ch = fCharacters[*c];
-            originLineShift += (ch.Size.y) * scale / 2; // bitshift by 6 to get value in pixels (2^6 = 64)
+            originLineShift += (ch.Size.y) * scale;
         }
-        y -= originLineShift / text.size();
+        y -= originLineShift / text.size() / 2;
         break;
     }
     case Align::Top: { //shift to the top
         float originLineShift = 0.0f;
         for (c = text.begin(); c != text.end(); c++) {
             Character ch = fCharacters[*c];
-            originLineShift += (ch.Size.y) * scale; // bitshift by 6 to get value in pixels (2^6 = 64)
+            originLineShift += (ch.Size.y) * scale;
         }
         y -= originLineShift / text.size();
         break;
     }}
-
     for (c = text.begin(); c != text.end(); c++)
     {
         Character ch = fCharacters[*c];
@@ -199,10 +193,8 @@ std::map<char, Character> fontLoad(const char* fontPath) {
         glfwTerminate();
         exit(-1);
     }
-
     /* The pixel font size we'd like to extract from this face: */
     FT_Set_Pixel_Sizes(face, 0, 48); // 0: dynamically calculate
-
     /* Test; Load a glyph, 'X' */
     if (FT_Load_Char(face, 'X', FT_LOAD_RENDER))
     {

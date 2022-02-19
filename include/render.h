@@ -33,7 +33,6 @@ class Shader
 public:
     // the program ID
     unsigned int ID;
-
     // constructor reads and builds the shader
     Shader(const char* vertexPath, const char* fragmentPath);
     // use/activate the shader
@@ -59,11 +58,6 @@ void RenderText(std::map<char, Character> fCharacters,
                 float x, float y, float scale,
                 glm::vec3 color);
 std::map<char, Character> fontLoad(const char* fontPath);
-
-/* font paths */
-//inline const char* arial_fontPath = "fonts/arial.ttf";
-//inline const char* halflife_fontPath = "fonts/halflife.ttf";
-//inline const char* MKDS_fontPath = "fonts/MKDS.ttf";
 
 /* glyph shader paths */
 inline const char* glyph_vertexShaderPath = "shaders/glyph.vs.glsl";
