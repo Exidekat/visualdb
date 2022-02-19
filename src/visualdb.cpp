@@ -142,15 +142,15 @@ int main() {
     glProgramUniformMatrix4fv(glyphShader.ID, glGetUniformLocation(glyphShader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
     /* Loop until the user closes the window */
-    while (!glfwWindowShouldClose(window))
+    while (!glfwWindowShouldClose(window))                  //cheatsheet note: 1280x720
     {
         glfwSetWindowSizeCallback(window, window_size_callback); //Check for window resize
 
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT);
 
-        RenderText(UbuntuB_Characters, glyphShader, "framebuffer size: " + std::to_string(fbw) + "px, " + std::to_string(fbh) + "px", 20.0f, 20.0f, 0.8f, glm::vec3(0.5f, 0.8f, 0.5f));
-        RenderText(MKDS_Characters, glyphShader, "HAYDON BRAIN GO RBBRRBRB CRK CRASH BEEP", 100.0f, 620.0f, 1.0f, glm::vec3(0.3f, 0.7f, 0.9f));
+        RenderText(UbuntuB_Characters, glyphShader, "framebuffer size: " + std::to_string(fbw) + "px, " + std::to_string(fbh) + "px", {Align::Left, Align::Bottom}, 20.0f, 20.0f, 0.8f, glm::vec3(0.5f, 0.8f, 0.5f));
+        RenderText(MKDS_Characters, glyphShader, "HAYDON BRAIN GO RBBRRBRB CRK CRASH BEEP", {Align::Center, Align::Top}, 640.0f, 620.0f, 1.0f, glm::vec3(0.3f, 0.7f, 0.9f));
         //RenderText(UbuntuB_Characters, glyphShader, "HaYDoN BRain Go RBBRRBRB CRK CrASh bEEP", 250.0f, 550.0f, 1.0f, glm::vec3(0.3f, 0.7f, 0.9f));
         //RenderText(UbuntuM_Characters, glyphShader, "HaYDoN BRain Go RBBRRBRB CRK CrASh bEEP", 250.0f, 400.0f, 1.0f, glm::vec3(0.3f, 0.7f, 0.9f));
 

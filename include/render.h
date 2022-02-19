@@ -4,6 +4,8 @@
 #include <iostream>
 #include <map>
 #include <cstdlib>
+#include <array>
+
 
 //fontisms
 #include <ft2build.h>
@@ -17,6 +19,14 @@
 #include <string>
 #include <fstream>
 #include <sstream>
+
+enum class Align {
+    Left = 0, 
+    Center = 1, 
+    Right = 2, 
+    Bottom = Left, 
+    Top = Right
+};
 
 class Shader
 {
@@ -42,7 +52,12 @@ struct Character {
     unsigned int Advance;    // Offset to advance to next glyph
 };
 
-void RenderText(std::map<char, Character> fCharacters, Shader& s, const std::string& text, float x, float y, float scale, glm::vec3 color);
+void RenderText(std::map<char, Character> fCharacters,
+                Shader& s,
+                const std::string& text,
+                const std::array<Align,2>& align,
+                float x, float y, float scale,
+                glm::vec3 color);
 std::map<char, Character> fontLoad(const char* fontPath);
 
 /* font paths */

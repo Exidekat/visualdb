@@ -98,7 +98,12 @@ void Shader::setFloat(const std::string& name, float value) const
 }
 
 /* Function for rendering line of text */
-void RenderText(std::map<char, Character> fCharacters, Shader& s, const std::string& text, float x, float y, float scale, glm::vec3 color)
+void RenderText(std::map<char, Character> fCharacters,
+                Shader& s,
+                const std::string& text,
+                const std::array<Align, 2>& align,
+                float x, float y, float scale,
+                glm::vec3 color)
 {
     // activate corresponding render state	
     s.use();
@@ -108,6 +113,41 @@ void RenderText(std::map<char, Character> fCharacters, Shader& s, const std::str
 
     // iterate through all characters
     std::string::const_iterator c;
+    switch (align[0]) {
+    case Align::Center: { //shift to the horizontal center
+        for (c = text.begin(); c != text.end(); c++) {
+            Character ch = fCharacters[*c];
+            x -= (ch.Advance >> 6) * scale / 2; // bitshift by 6 to get value in pixels (2^6 = 64)
+        }
+        break;
+    }
+    case Align::Right: { //shift to the far right
+        for (c = text.begin(); c != text.end(); c++) {
+            Character ch = fCharacters[*c];
+            x -= (ch.Advance >> 6) * scale; // bitshift by 6 to get value in pixels (2^6 = 64)
+        }
+        break;
+    }}
+    switch (align[1]) {
+    case Align::Center: { //shift to the vertical center
+        float originLineShift = 0.0f;
+        for (c = text.begin(); c != text.end(); c++) {
+            Character ch = fCharacters[*c];
+            originLineShift += (ch.Size.y) * scale / 2; // bitshift by 6 to get value in pixels (2^6 = 64)
+        }
+        y -= originLineShift / text.size();
+        break;
+    }
+    case Align::Top: { //shift to the top
+        float originLineShift = 0.0f;
+        for (c = text.begin(); c != text.end(); c++) {
+            Character ch = fCharacters[*c];
+            originLineShift += (ch.Size.y) * scale; // bitshift by 6 to get value in pixels (2^6 = 64)
+        }
+        y -= originLineShift / text.size();
+        break;
+    }}
+
     for (c = text.begin(); c != text.end(); c++)
     {
         Character ch = fCharacters[*c];
