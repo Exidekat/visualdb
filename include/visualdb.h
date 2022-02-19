@@ -4,6 +4,7 @@
 #include <iostream>
 #include <map>
 #include <cstdlib>
+#include <array>
 
 //glisms
 #include "glad/glad.h"
