@@ -5,6 +5,7 @@
 #include <map>
 #include <cstdlib>
 #include <vector>
+#include <array>
 
 //fontisms
 #include <ft2build.h>
@@ -20,12 +21,19 @@
 #include <sstream>
 #include <initializer_list>
 
+enum class Align {
+    Left = 0, 
+    Center = 1, 
+    Right = 2, 
+    Bottom = Left, 
+    Top = Right
+};
+
 class Shader
 {
 public:
     // the program ID
     unsigned int ID;
-
     // constructor reads and builds the shader
     Shader(const char* vertexPath, const char* fragmentPath);
     // use/activate the shader
@@ -104,13 +112,13 @@ struct Character {
     unsigned int Advance;    // Offset to advance to next glyph
 };
 
-void RenderText(std::map<char, Character> fCharacters, Shader& s, const std::string& text, float x, float y, float scale, glm::vec3 color);
+void RenderText(std::map<char, Character> fCharacters,
+                Shader& s,
+                const std::string& text,
+                const std::array<Align,2>& align,
+                float x, float y, float scale,
+                glm::vec3 color);
 std::map<char, Character> fontLoad(const char* fontPath);
-
-/* font paths */
-//inline const char* arial_fontPath = "fonts/arial.ttf";
-//inline const char* halflife_fontPath = "fonts/halflife.ttf";
-//inline const char* MKDS_fontPath = "fonts/MKDS.ttf";
 
 /* glyph shader paths */
 inline const char* glyph_vertexShaderPath = "shaders/glyph.vs.glsl";
