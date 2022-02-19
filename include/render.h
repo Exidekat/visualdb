@@ -34,9 +34,6 @@ public:
     void setFloat(const std::string& name, float value) const;
 };
 
-void RenderText(Shader& s, const std::string& text, float x, float y, float scale, glm::vec3 color);
-void fontLoad(const char* fontPath);
-
 /* Map with char(glyphname) and a struct for conveniently storing glyph data */
 struct Character {
     unsigned int TextureID;  // ID handle of the glyph texture
@@ -45,16 +42,18 @@ struct Character {
     unsigned int Advance;    // Offset to advance to next glyph
 };
 
+void RenderText(std::map<char, Character> fCharacters, Shader& s, const std::string& text, float x, float y, float scale, glm::vec3 color);
+std::map<char, Character> fontLoad(const char* fontPath);
+
 /* font paths */
-inline const char* arial_fontPath = "fonts/arial.ttf";
-inline const char* comic_fontPath = "fonts/comic.ttf";
-inline const char* halflife_fontPath = "fonts/halflife.ttf";
-inline const char* MarioKartDS_fontPath = "fonts/MarioKartDS.ttf";
+//inline const char* arial_fontPath = "fonts/arial.ttf";
+//inline const char* halflife_fontPath = "fonts/halflife.ttf";
+//inline const char* MKDS_fontPath = "fonts/MKDS.ttf";
 
 /* glyph shader paths */
 inline const char* glyph_vertexShaderPath = "shaders/glyph.vs.glsl";
 inline const char* glyph_fragmentShaderPath = "shaders/glyph.fs.glsl";
 
-extern std::map<char, Character> Characters;
+//extern std::map<char, Character> Characters;
 extern unsigned int VAO, VBO;
 extern int fbw, fbh;

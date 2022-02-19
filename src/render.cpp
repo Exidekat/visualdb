@@ -98,7 +98,7 @@ void Shader::setFloat(const std::string& name, float value) const
 }
 
 /* Function for rendering line of text */
-void RenderText(Shader& s, const std::string& text, float x, float y, float scale, glm::vec3 color)
+void RenderText(std::map<char, Character> fCharacters, Shader& s, const std::string& text, float x, float y, float scale, glm::vec3 color)
 {
     // activate corresponding render state	
     s.use();
@@ -110,7 +110,7 @@ void RenderText(Shader& s, const std::string& text, float x, float y, float scal
     std::string::const_iterator c;
     for (c = text.begin(); c != text.end(); c++)
     {
-        Character ch = Characters[*c];
+        Character ch = fCharacters[*c];
 
         float xpos = x + ch.Bearing.x * scale;
         float ypos = y - (ch.Size.y - ch.Bearing.y) * scale;
@@ -142,7 +142,8 @@ void RenderText(Shader& s, const std::string& text, float x, float y, float scal
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void fontLoad(const char* fontPath) {
+std::map<char, Character> fontLoad(const char* fontPath) {
+    std::map<char, Character> Characters;
     /* Load fontface with Freetype */
     FT_Library ft;
     if (FT_Init_FreeType(&ft))
@@ -210,8 +211,8 @@ void fontLoad(const char* fontPath) {
         };
         Characters.insert(std::pair<char, Character>(c, character));
     }
-
     /* Clear FreeType resources */
     FT_Done_Face(face);
     FT_Done_FreeType(ft);
+    return Characters;
 }

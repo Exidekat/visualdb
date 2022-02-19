@@ -109,10 +109,15 @@ int main() {
     } 
 
     /* Sets an rgba color to glClear */
-	glClearColor(1,0.65,0.15,0.9);
+	glClearColor(1.0f,0.65f,0.15f,0.9f);
     
     /* Font loading! */
-    fontLoad(arial_fontPath);
+    //std::map<char, Character> arial_Characters = fontLoad("fonts/arial.ttf");
+    std::map<char, Character> MKDS_Characters = fontLoad("fonts/MKDS.ttf");
+    std::map<char, Character> halflife_Characters = fontLoad("fonts/halflife.ttf");
+    std::map<char, Character> UbuntuB_Characters = fontLoad("fonts/Ubuntu-Bold.ttf");
+    std::map<char, Character> UbuntuM_Characters = fontLoad("fonts/Ubuntu-Medium.ttf");
+    std::map<char, Character> UbuntuR_Characters = fontLoad("fonts/Ubuntu-Regular.ttf");
 
     /* Enable blending*/
     glEnable(GL_BLEND);
@@ -139,20 +144,18 @@ int main() {
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
-        /* Check for window resize */
-        glfwSetWindowSizeCallback(window, window_size_callback);
+        glfwSetWindowSizeCallback(window, window_size_callback); //Check for window resize
 
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT);
 
-        RenderText(glyphShader, "This is the frame buffer size: " + std::to_string(fbw) + ", " + std::to_string(fbh), 25.0f, 25.0f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
-        RenderText(glyphShader, "haydon brain go rbbrrbrb crk crash beep", 540.0f, 570.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f));
-        
-        /* Swap front and back buffers */
-        glfwSwapBuffers(window);
+        RenderText(UbuntuB_Characters, glyphShader, "framebuffer size: " + std::to_string(fbw) + "px, " + std::to_string(fbh) + "px", 20.0f, 20.0f, 0.8f, glm::vec3(0.5f, 0.8f, 0.5f));
+        RenderText(MKDS_Characters, glyphShader, "HAYDON BRAIN GO RBBRRBRB CRK CRASH BEEP", 100.0f, 620.0f, 1.0f, glm::vec3(0.3f, 0.7f, 0.9f));
+        //RenderText(UbuntuB_Characters, glyphShader, "HaYDoN BRain Go RBBRRBRB CRK CrASh bEEP", 250.0f, 550.0f, 1.0f, glm::vec3(0.3f, 0.7f, 0.9f));
+        //RenderText(UbuntuM_Characters, glyphShader, "HaYDoN BRain Go RBBRRBRB CRK CrASh bEEP", 250.0f, 400.0f, 1.0f, glm::vec3(0.3f, 0.7f, 0.9f));
 
-        /* Poll for and process events */
-        glfwPollEvents();
+        glfwSwapBuffers(window); //Swap front and back buffers
+        glfwPollEvents(); //Poll for and process events
     }
 
     glfwTerminate();
