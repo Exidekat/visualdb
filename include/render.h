@@ -4,6 +4,7 @@
 #include <iostream>
 #include <map>
 #include <cstdlib>
+#include <vector>
 
 //fontisms
 #include <ft2build.h>
@@ -17,6 +18,7 @@
 #include <string>
 #include <fstream>
 #include <sstream>
+#include <initializer_list>
 
 class Shader
 {
@@ -33,6 +35,64 @@ public:
     void setInt(const std::string& name, int value) const;
     void setFloat(const std::string& name, float value) const;
 };
+
+
+class VertexBuffer {
+public:
+    enum class Mode {
+        StaticDraw = GL_STATIC_DRAW,
+        StaticCopy = GL_STATIC_COPY,
+        StaticRead = GL_STATIC_READ,
+        DynamicDraw = GL_DYNAMIC_DRAW,
+        DynamicCopy = GL_DYNAMIC_COPY,
+        DynamicRead = GL_DYNAMIC_READ,
+        StreamDraw = GL_STREAM_DRAW,
+        StreamCopy = GL_STREAM_COPY,
+        StreamRead = GL_STREAM_READ
+    };
+
+    VertexBuffer(const std::vector<float>& data, Mode mode = Mode::StaticDraw);
+    VertexBuffer(size_t size, Mode mode = Mode::StaticDraw);
+    ~VertexBuffer();
+
+    void bind() const;
+
+    [[nodiscard]] uint32_t getHandle() const noexcept;
+
+    void set(const std::vector<float>& data, Mode mode = Mode::StaticDraw);
+    void clear(Mode mode = Mode::StaticDraw);
+    void resize(size_t newSize, Mode mode = Mode::StaticDraw);
+    
+    void update(const std::vector<float>& data);
+
+    [[nodiscard]] size_t size() const noexcept;
+
+private:
+    uint32_t m_Handle;
+    size_t m_Size;
+
+};
+
+class VertexArray {
+public:
+    VertexArray();
+    ~VertexArray();
+
+    void vbo(const VertexBuffer& vbo, std::initializer_list<size_t> sizes);
+    void vbo(const VertexBuffer* vbo, std::initializer_list<size_t> sizes);
+
+    void enableAttribute(size_t i);
+    void disableAttribute(size_t i);
+
+    [[nodiscard]] uint32_t getHandle() const noexcept;
+
+private:
+    uint32_t m_Handle;
+
+    size_t m_CurrentBinding = 0;
+    size_t m_CurrentAttribute = 0;
+};
+
 
 /* Map with char(glyphname) and a struct for conveniently storing glyph data */
 struct Character {

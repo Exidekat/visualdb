@@ -49,6 +49,7 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath)
     {
         glGetShaderInfoLog(vertex, 512, NULL, infoLog);
         std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
+        exit(-1);
     };
     // similar for Fragment Shader
     fragment = glCreateShader(GL_FRAGMENT_SHADER);
@@ -60,6 +61,7 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath)
     {
         glGetShaderInfoLog(fragment, 512, NULL, infoLog);
         std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
+        exit(-1);
     };
 
     // shader Program
@@ -73,6 +75,7 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath)
     {
         glGetProgramInfoLog(ID, 512, NULL, infoLog);
         std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
+        exit(-1);
     }
 
     // delete the shaders as they're linked into our program now and no longer necessary
@@ -95,6 +98,103 @@ void Shader::setInt(const std::string& name, int value) const
 void Shader::setFloat(const std::string& name, float value) const
 {
     glUniform1f(glGetUniformLocation(ID, name.c_str()), value);
+}
+
+VertexBuffer::VertexBuffer(const std::vector<float>& data, VertexBuffer::Mode mode) : m_Size(data.size()) {
+    glCreateBuffers(1,&m_Handle);
+    glNamedBufferData(m_Handle, data.size() * sizeof(float), data.data(), static_cast<GLenum>(mode));
+}
+
+VertexBuffer::VertexBuffer(size_t size, VertexBuffer::Mode mode) : m_Size(size) {
+    glCreateBuffers(1,&m_Handle);
+    glNamedBufferData(m_Handle, size * sizeof(float), nullptr, static_cast<GLenum>(mode));
+}
+
+VertexBuffer::~VertexBuffer() {
+    glDeleteBuffers(1, &m_Handle);
+}
+
+void VertexBuffer::bind() const {
+    glBindBuffer(GL_ARRAY_BUFFER, m_Handle);
+}
+
+uint32_t VertexBuffer::getHandle() const noexcept {
+    return m_Handle;
+}
+
+void VertexBuffer::set(const std::vector<float>& data, VertexBuffer::Mode mode) {
+    glNamedBufferData(m_Handle, data.size() * sizeof(float), data.data(), static_cast<GLenum>(mode));
+    m_Size = data.size();
+}
+
+void VertexBuffer::clear(VertexBuffer::Mode mode) {
+    glNamedBufferData(m_Handle, 0, nullptr, static_cast<GLenum>(mode));
+}
+
+void VertexBuffer::resize(size_t newSize, VertexBuffer::Mode mode) {
+    glNamedBufferData(m_Handle, newSize * sizeof(float), nullptr, static_cast<GLenum>(mode));
+}
+
+void VertexBuffer::update(const std::vector<float>& data) {
+    glNamedBufferSubData(m_Handle, 0, data.size() * sizeof(float), data.data());
+}
+
+size_t VertexBuffer::size() const noexcept {
+    return m_Size;
+}
+
+VertexArray::VertexArray() {
+    glCreateVertexArrays(1, &m_Handle);
+}
+
+VertexArray::~VertexArray() {
+    glDeleteVertexArrays(1, &m_Handle);
+}
+
+void VertexArray::vbo(const VertexBuffer& vbo, std::initializer_list<size_t> sizes) {
+
+    size_t bind = m_CurrentBinding++;
+
+    size_t stride = 0;
+
+    for (size_t attrib_s : sizes) {
+        size_t attrib = m_CurrentAttribute++;
+        glVertexArrayAttribBinding(m_Handle, attrib, bind);
+        glVertexArrayAttribFormat(m_Handle, attrib, attrib_s, GL_FLOAT, false, stride);
+        glEnableVertexArrayAttrib(m_Handle, attrib);
+        stride += attrib_s * sizeof(float);
+    }
+
+    glVertexArrayVertexBuffer(m_Handle, bind, vbo.getHandle(), 0, stride);
+}
+
+void VertexArray::vbo(const VertexBuffer* vbo, std::initializer_list<size_t> sizes) {
+
+    size_t bind = m_CurrentBinding++;
+
+    size_t stride = 0;
+
+    for (size_t attrib_s : sizes) {
+        size_t attrib = m_CurrentAttribute++;
+        glVertexArrayAttribBinding(m_Handle, attrib, bind);
+        glVertexArrayAttribFormat(m_Handle, attrib, attrib_s, GL_FLOAT, false, stride);
+        enableAttribute(attrib);
+        stride += attrib_s * sizeof(float);
+    }
+
+    glVertexArrayVertexBuffer(m_Handle, bind, vbo->getHandle(), 0, stride);
+}
+
+void VertexArray::enableAttribute(size_t i) {
+    glEnableVertexArrayAttrib(m_Handle, i);
+}
+
+void VertexArray::disableAttribute(size_t i) {
+    glDisableVertexArrayAttrib(m_Handle, i);
+}
+
+uint32_t VertexArray::getHandle() const noexcept {
+    return m_Handle;
 }
 
 /* Function for rendering line of text */
