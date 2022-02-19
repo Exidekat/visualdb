@@ -138,10 +138,27 @@ int main() {
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
-    
+
+    std::vector<float> data = {
+        100.0, 100.0,
+        400.0, 100.0,
+        400.0, 400.0,
+        100.0, 400.0
+    };
+
+    VertexBuffer* cvbo = new VertexBuffer(data);
+    cvbo->bind();
+
+    VertexArray* cvao = new VertexArray();
+    cvao->vbo(cvbo, {2});
+
     /* Load glyph shader */
     Shader glyphShader(glyph_vertexShaderPath, glyph_fragmentShaderPath);
     glProgramUniformMatrix4fv(glyphShader.ID, glGetUniformLocation(glyphShader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+    Shader circleShader("shaders/coloredshape.vs.glsl","shaders/coloredcircle.fs.glsl");
+    glProgramUniformMatrix4fv(circleShader.ID, glGetUniformLocation(circleShader.ID, "uProjection"), 1, GL_FALSE, glm::value_ptr(projection));
+    Shader shapeShader("shaders/coloredshape.vs.glsl", "shaders/coloredshape.fs.glsl");
+    glProgramUniformMatrix4fv(shapeShader.ID, glGetUniformLocation(shapeShader.ID, "uProjection"), 1, GL_FALSE, glm::value_ptr(projection));
 
     glm::vec3 top_rgb       = rgbByteToFloat(75.f, 220.f, 205.f);       //teal
     glm::vec3 middle_rgb    = rgbByteToFloat(220.f, 75.f, 50.f);        //velvet
@@ -160,6 +177,25 @@ int main() {
         RenderText(UbuntuB_Characters, glyphShader, "The main text goin on here.", { Align::Center, Align::Center }, 640.0f, 360.0f, 1.0f, middle_rgb);
         RenderText(UbuntuM_Characters, glyphShader, "current query: (lua stuffs goin on here)" + query, { Align::Left, Align::Bottom }, 20.0f, 45.0f, 0.5f, bottom_rgb);
         RenderText(UbuntuM_Characters, glyphShader, "framebuffer size: " + std::to_string(fbw) + "px, " + std::to_string(fbh) + "px", { Align::Left, Align::Bottom }, 20.0f, 20.0f, 0.5f, bottom_rgb);
+
+        shapeShader.use();
+        glUniform2f(glGetUniformLocation(shapeShader.ID, "uCenter"), 200, 200);
+        glUniform4f(glGetUniformLocation(shapeShader.ID, "uColor"), 0.0f, 0.0f, 1.0f, 0.4f);
+        glUniform1f(glGetUniformLocation(shapeShader.ID, "uRadius2"), 100 * 100);
+        glBindVertexArray(cvao->getHandle());
+        glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+
+
+        //glUniform2f(glGetUniformLocation(shapeShader.ID, "uCenter"), 200 + (25 * glm::cos(glfwGetTime())), + 200 + (25 * glm::sin(glfwGetTime())));
+        //glUniform4f(glGetUniformLocation(shapeShader.ID, "uColor"), 0.0f, 0.0f, 1.0f, 0.4f);
+        //glUniform1f(glGetUniformLocation(shapeShader.ID, "uRadius2"), 50 * 50);
+        //glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+
+        //glUniform2f(glGetUniformLocation(shapeShader.ID, "uCenter"), 200 + (25 * glm::cos(glfwGetTime())) + (12.5 * glm::cos(2 * glfwGetTime() + 1)), + 200 + (25 * glm::sin(glfwGetTime()))  + (12.5 * glm::sin(2 * glfwGetTime() + 1)));
+        //glUniform4f(glGetUniformLocation(shapeShader.ID, "uColor"), 0.0f, 0.0f, 1.0f, 0.4f);
+        //glUniform1f(glGetUniformLocation(shapeShader.ID, "uRadius2"), 25 * 25);
+        //glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+
 
         glfwSwapBuffers(window); //Swap front and back buffers
         glfwPollEvents(); //Poll for and process events

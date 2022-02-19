@@ -12,7 +12,7 @@ add_subdirectory("bin/glfw")
 add_subdirectory("bin/freetype")
 
 # Add source to this project's executable.
-add_executable (visualdb "src/visualdb.cpp" "src/glad.c" "src/render.cpp" "include/render.h")
+add_executable (visualdb "src/visualdb.cpp" "src/glad.c" "src/render.cpp" "include/render.h" "include/shape.h" "src/shape.cpp")
 target_include_directories(visualdb PUBLIC include/)
 target_link_libraries(visualdb PUBLIC glfw::glfw)
 # find_package(freetype REQUIRED)
