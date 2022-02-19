@@ -30,7 +30,7 @@ public:
     unsigned int ID;
 
     // constructor reads and builds the shader
-    Shader(const char* vertexCode, const char* fragmentCode);
+    Shader(const char* vertexPath, const char* fragmentPath);
     // use/activate the shader
     void use();
     // utility uniform functions
@@ -49,24 +49,26 @@ struct Character {
     unsigned int Advance;    // Offset to advance to next glyph
 };
 
-//glyph vertex shader
-const char* g_vertexShaderSource = "#version 330 core\n"
-"layout (location = 0) in vec4 vertex; // <vec2 pos, vec2 tex>\n"
-"out vec2 TexCoords;\n"
-"uniform mat4 projection;\n"
-"void main()\n"
-"{\n"
-"   gl_Position = projection * vec4(vertex.xy, 0.0, 1.0);\n"
-"   TexCoords = vertex.zw;\n"
-"}\0";
-//glyph fragment shader
-const char* g_fragmentShaderSource = "#version 330 core\n"
-"in vec2 TexCoords;\n"
-"out vec4 color;\n"
-"uniform sampler2D text;\n"
-"uniform vec3 textColor;\n"
-"void main()\n"
-"{\n"
-"   vec4 sampled = vec4(1.0, 1.0, 1.0, texture(text, TexCoords).r);\n"
-"   color = vec4(textColor, 1.0) * sampled;\n"
-"}\n\0"; // \n necessary?
+//glyph vertex shader path
+//const char* g_vertexShaderSource = "#version 330 core\n"
+//"layout (location = 0) in vec4 vertex; // <vec2 pos, vec2 tex>\n"
+//"out vec2 TexCoords;\n"
+//"uniform mat4 projection;\n"
+//"void main()\n"
+//"{\n"
+//"   gl_Position = projection * vec4(vertex.xy, 0.0, 1.0);\n"
+//"   TexCoords = vertex.zw;\n"
+//"}\0";
+////glyph fragment shader path
+//const char* g_fragmentShaderSource = "#version 330 core\n"
+//"in vec2 TexCoords;\n"
+//"out vec4 color;\n"
+//"uniform sampler2D text;\n"
+//"uniform vec3 textColor;\n"
+//"void main()\n"
+//"{\n"
+//"   vec4 sampled = vec4(1.0, 1.0, 1.0, texture(text, TexCoords).r);\n"
+//"   color = vec4(textColor, 1.0) * sampled;\n"
+//"}\n\0";
+const char* g_vertexShaderPath = "shaders/glyph.vs.glsl";
+const char* g_fragmentShaderPath = "shaders/glyph.fs.glsl";

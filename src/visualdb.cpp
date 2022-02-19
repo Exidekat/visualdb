@@ -52,38 +52,38 @@ void APIENTRY glDebugOutput(GLenum source,
 }
 
 //define shader (oh god)
-Shader::Shader(const char* vertexCode, const char* fragmentCode)
+Shader::Shader(const char* vertexPath, const char* fragmentPath)
 {
     // 1. retrieve the vertex/fragment source code from filePath
-    // std::string vertexCode;
-    // std::string fragmentCode;
-    // std::ifstream vShaderFile;
-    // std::ifstream fShaderFile;
-    // // ensure ifstream objects can throw exceptions:
-    // vShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-    // fShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-    // try
-    // {
-    //     // open files
-    //     vShaderFile.open(vertexPath);
-    //     fShaderFile.open(fragmentPath);
-    //     std::stringstream vShaderStream, fShaderStream;
-    //     // read file's buffer contents into streams
-    //     vShaderStream << vShaderFile.rdbuf();
-    //     fShaderStream << fShaderFile.rdbuf();
-    //     // close file handlers
-    //     vShaderFile.close();
-    //     fShaderFile.close();
-    //     // convert stream into string
-    //     vertexCode = vShaderStream.str();
-    //     fragmentCode = fShaderStream.str();
-    // }
-    // catch (std::ifstream::failure e)
-    // {
-    //     std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
-    // }
-    // const char* vShaderCode = vertexCode.c_str();
-    // const char* fShaderCode = fragmentCode.c_str();
+    std::string vertexCode;
+    std::string fragmentCode;
+    std::ifstream vShaderFile;
+    std::ifstream fShaderFile;
+    // ensure ifstream objects can throw exceptions:
+    vShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+    fShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+    try
+    {
+        // open files
+        vShaderFile.open(vertexPath);
+        fShaderFile.open(fragmentPath);
+        std::stringstream vShaderStream, fShaderStream;
+        // read file's buffer contents into streams
+        vShaderStream << vShaderFile.rdbuf();
+        fShaderStream << fShaderFile.rdbuf();
+        // close file handlers
+        vShaderFile.close();
+        fShaderFile.close();
+        // convert stream into string
+        vertexCode = vShaderStream.str();
+        fragmentCode = fShaderStream.str();
+    }
+    catch (std::ifstream::failure e)
+    {
+        std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
+    }
+    const char* vShaderCode = vertexCode.c_str();
+    const char* fShaderCode = fragmentCode.c_str();
 
     // 2. compile shaders
     unsigned int vertex, fragment;
@@ -91,7 +91,7 @@ Shader::Shader(const char* vertexCode, const char* fragmentCode)
     char infoLog[512];
     // vertex Shader
     vertex = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertex, 1, &vertexCode, NULL);
+    glShaderSource(vertex, 1, &vShaderCode, NULL);
     glCompileShader(vertex);
     // print compile errors if any
     glGetShaderiv(vertex, GL_COMPILE_STATUS, &success);
@@ -102,7 +102,7 @@ Shader::Shader(const char* vertexCode, const char* fragmentCode)
     };
     // similar for Fragment Shader
     fragment = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragment, 1, &fragmentCode, NULL);
+    glShaderSource(fragment, 1, &fShaderCode, NULL);
     glCompileShader(fragment);
     // print compile errors if any
     glGetShaderiv(fragment, GL_COMPILE_STATUS, &success);
@@ -149,26 +149,25 @@ void Shader::setFloat(const std::string& name, float value) const
 
 void window_size_callback(GLFWwindow* window, int width, int height)
 {
-    int n_width, n_height;
+    //int n_width, n_height; //old method of window resizing
     /* Keep window size at something kosher */
     if (width <= 1280) {
-        n_width = 1280;
-        n_height = 720;
+        //n_width = 1280;
+        //n_height = 720;
+        glfwSetWindowSize(window, 1280, 720);
     }
     else if (width <= 1920)  {
-        n_width = width;
-        n_height = width * 1080 / 1920;
+        //n_width = width;
+        //n_height = width * 1080 / 1920;
+        glfwSetWindowAspectRatio(window, 1280, 720);
     }
     else if (width <= 2560) {
-        n_width = width;
-        n_height = width * 1440 / 2560;
+        //n_width = width;
+        //n_height = width * 1440 / 2560;
+        glfwSetWindowAspectRatio(window, 2560, 1440);
     }
-    else {
-        n_width = width;
-        n_height = height;
-    }
-    std::cout << n_width << n_height << std::endl;
-    glfwSetWindowSize(window, n_width, n_height);
+    //std::cout << n_width << n_height << std::endl;
+    //glfwSetWindowSize(window, n_width, n_height);
 
     /* Reset glViewport with new values */
     glfwGetFramebufferSize(window, &fbw, &fbh);
@@ -224,7 +223,7 @@ int main() {
         return -1;
     }
     FT_Face face;
-    if (FT_New_Face(ft, "../../../fonts/arial.ttf", 0, &face))
+    if (FT_New_Face(ft, "fonts/arial.ttf", 0, &face))
     {
         std::cout << "ERROR::FREETYPE: Failed to load font." << std::endl;
         glfwTerminate();
@@ -305,8 +304,9 @@ int main() {
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
     
-    Shader shader(g_vertexShaderSource, g_fragmentShaderSource);
-    glProgramUniformMatrix4fv(shader.ID, glGetUniformLocation(shader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+    /* Load glyph shader */
+    Shader glyphShader(g_vertexShaderPath, g_fragmentShaderPath);
+    glProgramUniformMatrix4fv(glyphShader.ID, glGetUniformLocation(glyphShader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
@@ -317,8 +317,8 @@ int main() {
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT);
 
-        RenderText(shader, "This is the frame buffer size: " + std::to_string(fbw) + ", " + std::to_string(fbh), 25.0f, 25.0f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
-        RenderText(shader, "haydon brain go rbbrrbrb crk crash beep", 540.0f, 570.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f));
+        RenderText(glyphShader, "This is the frame buffer size: " + std::to_string(fbw) + ", " + std::to_string(fbh), 25.0f, 25.0f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
+        RenderText(glyphShader, "haydon brain go rbbrrbrb crk crash beep", 540.0f, 570.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f));
         
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
