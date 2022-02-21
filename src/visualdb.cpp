@@ -172,16 +172,16 @@ int main() {
         /* Render here */                                                                        //
         glClear(GL_COLOR_BUFFER_BIT);                                                            //MKDS max 40 characters at 1.0f scale
                        
-        RenderShape(Shape::Rectangle, shapeShader, cvao, cvbo, {Align::Left, Align::Bottom}, 50.0f, 50.0f, 1180.f, 620.f, { (glm::sin(glfwGetTime()) + 1.0f) / 2.0f, (glm::sin(glfwGetTime() + 104) + 1.0f) / 2.0f, (glm::sin(glfwGetTime() + 20) + 1.0f) / 2.0f, 1.0f });
-        RenderText(MKDS_Characters, glyphShader, "WELCOME TO VDB", {Align::Center, Align::Top}, 640.0f, 695.0f, 1.0f, top_rgb);
+        RenderShape(Shape::Rectangle, shapeShader, cvao, cvbo, {Align::Center, Align::Top}, 640.0f, 720.0f, 1200.f, 640.f, { (glm::sin(glfwGetTime()) + 1.0f) / 2.0f, (glm::sin(glfwGetTime() + 104) + 1.0f) / 2.0f, (glm::sin(glfwGetTime() + 20) + 1.0f) / 2.0f, 1.0f });
+        RenderText(MKDS_Characters, glyphShader, "WELCOME TO VDB", {Align::Center, Align::Top}, 640.0f, 715.0f, 1.0f, top_rgb);
         RenderText(UbuntuB_Characters, glyphShader, "The main text goin on here.", { Align::Center, Align::Center }, 640.0f, 360.0f, 1.0f, middle_rgb);
-        RenderText(UbuntuM_Characters, glyphShader, "current query: (lua stuffs goin on here)" + query, { Align::Left, Align::Bottom }, 20.0f, 45.0f, 0.5f, bottom_rgb);
-        RenderText(UbuntuM_Characters, glyphShader, "framebuffer size: " + std::to_string(fbw) + "px, " + std::to_string(fbh) + "px", { Align::Left, Align::Bottom }, 20.0f, 20.0f, 0.5f, bottom_rgb);
+        RenderText(UbuntuM_Characters, glyphShader, "current query: (lua stuffs goin on here)" + query, { Align::Right, Align::Bottom }, 1275.0f, 5.0f, 0.5f, bottom_rgb);
+        RenderText(UbuntuM_Characters, glyphShader, "framebuffer size: " + std::to_string(fbw) + "px, " + std::to_string(fbh) + "px", { Align::Left, Align::Bottom }, 5.0f, 5.0f, 0.5f, bottom_rgb);
 
-        if (glfwGetTime() < 3) {
-            RenderShape(Shape::Rectangle, shapeShader, cvao, cvbo, { Align::Left, Align::Bottom }, 0.0f, 0.0f, 1280.f, 720.f, { (glm::sin(glfwGetTime()) + 1.0f) / 2.0f, (glm::sin(glfwGetTime() + 104) + 1.0f) / 2.0f, (glm::sin(glfwGetTime() + 20) + 1.0f) / 2.0f, 1.0f - (glfwGetTime()/4)});
-            RenderText(MKDS_Characters, glyphShader, "WELCOME TO", { Align::Center, Align::Center }, 640.0f, 410.0f, 3.0f, rgba8_to_float(75, 220, 205, 255 - (255 * glfwGetTime() / 4)));
-            RenderText(MKDS_Characters, glyphShader, "COLORSLOL", { Align::Center, Align::Center }, 640.0f, 290.0f, 3.0f, rgba8_to_float(75, 220, 205, 255 - (255* glfwGetTime() / 4)));
+        if (glfwGetTime() < 4) {
+            RenderShape(Shape::Rectangle, shapeShader, cvao, cvbo, { Align::Left, Align::Bottom }, 0.0f, 0.0f, 1280.f, 720.f, { (glm::sin(glfwGetTime()) + 1.0f) / 2.0f, (glm::sin(glfwGetTime() + 104) + 1.0f) / 2.0f, (glm::sin(glfwGetTime() + 20) + 1.0f) / 2.0f, 1.0f - (glfwGetTime()/6)});
+            RenderText(MKDS_Characters, glyphShader, "WELCOME TO", { Align::Center, Align::Center }, 640.0f, 410.0f, 3.0f, rgba8_to_float(75, 220, 205, 255 - (255 * glfwGetTime()/6)));
+            RenderText(MKDS_Characters, glyphShader, "COLORSLOL", { Align::Center, Align::Center }, 640.0f, 290.0f, 3.0f, rgba8_to_float(75, 220, 205, 255 - (255* glfwGetTime()/6)));
         }
 
         /*shapeShader.use();

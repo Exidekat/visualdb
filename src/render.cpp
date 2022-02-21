@@ -209,16 +209,30 @@ void RenderShape(Shape shape,
         s.use();
         float xpos = x;
         float ypos = y;
-        //switch (align[0]) {
-        //case Align::Left: {
-            // update VBO for them VERTS
-            std::vector<float> vertices = {
-                 xpos,     ypos,               
-                 xpos + w, ypos,           
-                 xpos + w, ypos + h,   
-                 xpos,     ypos + h,        };
-        //    break;
-        //}}
+        switch (align[0]) {
+        case Align::Center: {
+            xpos = xpos - (w / 2);
+            break;
+        }
+        case Align::Right: {
+            xpos = xpos - w;
+            break;
+        }}
+        switch (align[1]) {
+        case Align::Center: {
+            ypos = ypos - (h / 2);
+            break;
+        }
+        case Align::Top: {
+            ypos = ypos - h;
+            break;
+        }}
+        // update VBO for them VERTS
+        std::vector<float> vertices = {
+             xpos,     ypos,
+             xpos + w, ypos,
+             xpos + w, ypos + h,
+             xpos,     ypos + h, };
         // update content of VBO memory
         afuckinbufferarray->bind();
         afuckinbufferarray->update(vertices);
