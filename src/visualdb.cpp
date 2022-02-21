@@ -7,49 +7,49 @@ unsigned int VAO, VBO;
 int fbw, fbh;
 
 /* OpenGL debugging! */
-void APIENTRY glDebugOutput(GLenum source, 
-                            GLenum type, 
-                            unsigned int id, 
-                            GLenum severity, 
-                            GLsizei length,
-                            const char *message, 
-                            const void *userParam)
+void APIENTRY glDebugOutput(GLenum source,
+    GLenum type,
+    unsigned int id,
+    GLenum severity,
+    GLsizei length,
+    const char* message,
+    const void* userParam)
 {
     // ignore non-significant error/warning codes
-    if(id == 131169 || id == 131185 || id == 131218 || id == 131204) return; 
+    if (id == 131169 || id == 131185 || id == 131218 || id == 131204) return;
 
     std::cout << "---------------" << std::endl;
-    std::cout << "Debug message (" << id << "): " <<  message << std::endl;
+    std::cout << "Debug message (" << id << "): " << message << std::endl;
 
     switch (source)
     {
-        case GL_DEBUG_SOURCE_API:             std::cout << "Source: API"; break;
-        case GL_DEBUG_SOURCE_WINDOW_SYSTEM:   std::cout << "Source: Window System"; break;
-        case GL_DEBUG_SOURCE_SHADER_COMPILER: std::cout << "Source: Shader Compiler"; break;
-        case GL_DEBUG_SOURCE_THIRD_PARTY:     std::cout << "Source: Third Party"; break;
-        case GL_DEBUG_SOURCE_APPLICATION:     std::cout << "Source: Application"; break;
-        case GL_DEBUG_SOURCE_OTHER:           std::cout << "Source: Other"; break;
+    case GL_DEBUG_SOURCE_API:             std::cout << "Source: API"; break;
+    case GL_DEBUG_SOURCE_WINDOW_SYSTEM:   std::cout << "Source: Window System"; break;
+    case GL_DEBUG_SOURCE_SHADER_COMPILER: std::cout << "Source: Shader Compiler"; break;
+    case GL_DEBUG_SOURCE_THIRD_PARTY:     std::cout << "Source: Third Party"; break;
+    case GL_DEBUG_SOURCE_APPLICATION:     std::cout << "Source: Application"; break;
+    case GL_DEBUG_SOURCE_OTHER:           std::cout << "Source: Other"; break;
     } std::cout << std::endl;
 
     switch (type)
     {
-        case GL_DEBUG_TYPE_ERROR:               std::cout << "Type: Error"; break;
-        case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR: std::cout << "Type: Deprecated Behaviour"; break;
-        case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:  std::cout << "Type: Undefined Behaviour"; break; 
-        case GL_DEBUG_TYPE_PORTABILITY:         std::cout << "Type: Portability"; break;
-        case GL_DEBUG_TYPE_PERFORMANCE:         std::cout << "Type: Performance"; break;
-        case GL_DEBUG_TYPE_MARKER:              std::cout << "Type: Marker"; break;
-        case GL_DEBUG_TYPE_PUSH_GROUP:          std::cout << "Type: Push Group"; break;
-        case GL_DEBUG_TYPE_POP_GROUP:           std::cout << "Type: Pop Group"; break;
-        case GL_DEBUG_TYPE_OTHER:               std::cout << "Type: Other"; break;
+    case GL_DEBUG_TYPE_ERROR:               std::cout << "Type: Error"; break;
+    case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR: std::cout << "Type: Deprecated Behaviour"; break;
+    case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:  std::cout << "Type: Undefined Behaviour"; break;
+    case GL_DEBUG_TYPE_PORTABILITY:         std::cout << "Type: Portability"; break;
+    case GL_DEBUG_TYPE_PERFORMANCE:         std::cout << "Type: Performance"; break;
+    case GL_DEBUG_TYPE_MARKER:              std::cout << "Type: Marker"; break;
+    case GL_DEBUG_TYPE_PUSH_GROUP:          std::cout << "Type: Push Group"; break;
+    case GL_DEBUG_TYPE_POP_GROUP:           std::cout << "Type: Pop Group"; break;
+    case GL_DEBUG_TYPE_OTHER:               std::cout << "Type: Other"; break;
     } std::cout << std::endl;
-    
+
     switch (severity)
     {
-        case GL_DEBUG_SEVERITY_HIGH:         std::cout << "Severity: high"; break;
-        case GL_DEBUG_SEVERITY_MEDIUM:       std::cout << "Severity: medium"; break;
-        case GL_DEBUG_SEVERITY_LOW:          std::cout << "Severity: low"; break;
-        case GL_DEBUG_SEVERITY_NOTIFICATION: std::cout << "Severity: notification"; break;
+    case GL_DEBUG_SEVERITY_HIGH:         std::cout << "Severity: high"; break;
+    case GL_DEBUG_SEVERITY_MEDIUM:       std::cout << "Severity: medium"; break;
+    case GL_DEBUG_SEVERITY_LOW:          std::cout << "Severity: low"; break;
+    case GL_DEBUG_SEVERITY_NOTIFICATION: std::cout << "Severity: notification"; break;
     } std::cout << std::endl;
     std::cout << std::endl;
 }
@@ -60,7 +60,7 @@ void window_size_callback(GLFWwindow* window, int width, int height)
     if (width <= 1280) {
         glfwSetWindowSize(window, 1280, 720);
     }
-    else if (width <= 1920)  {
+    else if (width <= 1920) {
         glfwSetWindowAspectRatio(window, 1280, 720);
     }
     else if (width <= 2560) {
@@ -71,8 +71,6 @@ void window_size_callback(GLFWwindow* window, int width, int height)
     glfwGetFramebufferSize(window, &fbw, &fbh);
     glViewport(0, 0, fbw, fbh);
 }
-
-glm::vec3 rgbByteToFloat(float r, float g, float b) { return glm::vec3(r / 255.0f, g / 255.0f, b / 255.0f); }
 
 int main() {
 	std::cout << "Hello VDB." << std::endl;
@@ -146,11 +144,11 @@ int main() {
         100.0, 400.0
     };
 
-    VertexBuffer* cvbo = new VertexBuffer(data);
-    cvbo->bind();
-
-    VertexArray* cvao = new VertexArray();
-    cvao->vbo(cvbo, {2});
+    VertexBuffer* cvbo = new VertexBuffer(data);    //
+    cvbo->bind();                                   //  todo: ask andy how work
+                                                    //
+    VertexArray* cvao = new VertexArray();          //
+    cvao->vbo(cvbo, {2});                           //
 
     /* Load glyph shader */
     Shader glyphShader(glyph_vertexShaderPath, glyph_fragmentShaderPath);
@@ -160,11 +158,12 @@ int main() {
     Shader shapeShader("shaders/coloredshape.vs.glsl", "shaders/coloredshape.fs.glsl");
     glProgramUniformMatrix4fv(shapeShader.ID, glGetUniformLocation(shapeShader.ID, "uProjection"), 1, GL_FALSE, glm::value_ptr(projection));
 
-    glm::vec3 top_rgb       = rgbByteToFloat(75.f, 220.f, 205.f);       //teal
-    glm::vec3 middle_rgb    = rgbByteToFloat(220.f, 75.f, 50.f);        //velvet
-    glm::vec3 bottom_rgb    = rgbByteToFloat(162.f, 220.f, 75.f);       //limegreen
+    glm::vec4 top_rgb       = rgba8_to_float(75, 220, 205, 255);       //teal
+    glm::vec4 middle_rgb    = rgba8_to_float(220, 75, 50, 255);        //velvet
+    glm::vec4 bottom_rgb    = rgba8_to_float(162, 220, 75, 255);       //limegreen
 
     std::string query;  // Active VDB query. should be defined by lua speech 'set query'
+
     /* Loop until the user closes the window */                                                  //cheatsheet notes: 1280x720 min res
     while (!glfwWindowShouldClose(window))                                                       //
     {                                                                                            //
@@ -172,18 +171,25 @@ int main() {
                                                                                                  //
         /* Render here */                                                                        //
         glClear(GL_COLOR_BUFFER_BIT);                                                            //MKDS max 40 characters at 1.0f scale
-                                                                                                 
+                       
+        RenderShape(Shape::Rectangle, shapeShader, cvao, cvbo, {Align::Left, Align::Bottom}, 50.0f, 50.0f, 1180.f, 620.f, { (glm::sin(glfwGetTime()) + 1.0f) / 2.0f, (glm::sin(glfwGetTime() + 104) + 1.0f) / 2.0f, (glm::sin(glfwGetTime() + 20) + 1.0f) / 2.0f, 1.0f });
         RenderText(MKDS_Characters, glyphShader, "WELCOME TO VDB", {Align::Center, Align::Top}, 640.0f, 695.0f, 1.0f, top_rgb);
         RenderText(UbuntuB_Characters, glyphShader, "The main text goin on here.", { Align::Center, Align::Center }, 640.0f, 360.0f, 1.0f, middle_rgb);
         RenderText(UbuntuM_Characters, glyphShader, "current query: (lua stuffs goin on here)" + query, { Align::Left, Align::Bottom }, 20.0f, 45.0f, 0.5f, bottom_rgb);
         RenderText(UbuntuM_Characters, glyphShader, "framebuffer size: " + std::to_string(fbw) + "px, " + std::to_string(fbh) + "px", { Align::Left, Align::Bottom }, 20.0f, 20.0f, 0.5f, bottom_rgb);
 
-        shapeShader.use();
+        if (glfwGetTime() < 3) {
+            RenderShape(Shape::Rectangle, shapeShader, cvao, cvbo, { Align::Left, Align::Bottom }, 0.0f, 0.0f, 1280.f, 720.f, { (glm::sin(glfwGetTime()) + 1.0f) / 2.0f, (glm::sin(glfwGetTime() + 104) + 1.0f) / 2.0f, (glm::sin(glfwGetTime() + 20) + 1.0f) / 2.0f, 1.0f - (glfwGetTime()/4)});
+            RenderText(MKDS_Characters, glyphShader, "WELCOME TO", { Align::Center, Align::Center }, 640.0f, 410.0f, 3.0f, rgba8_to_float(75, 220, 205, 255 - (255 * glfwGetTime() / 4)));
+            RenderText(MKDS_Characters, glyphShader, "COLORSLOL", { Align::Center, Align::Center }, 640.0f, 290.0f, 3.0f, rgba8_to_float(75, 220, 205, 255 - (255* glfwGetTime() / 4)));
+        }
+
+        /*shapeShader.use();
         glUniform2f(glGetUniformLocation(shapeShader.ID, "uCenter"), 200, 200);
         glUniform4f(glGetUniformLocation(shapeShader.ID, "uColor"), 0.0f, 0.0f, 1.0f, 0.4f);
         glUniform1f(glGetUniformLocation(shapeShader.ID, "uRadius2"), 100 * 100);
         glBindVertexArray(cvao->getHandle());
-        glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+        glDrawArrays(GL_TRIANGLE_FAN, 0, 4);*/
 
 
         //glUniform2f(glGetUniformLocation(shapeShader.ID, "uCenter"), 200 + (25 * glm::cos(glfwGetTime())), + 200 + (25 * glm::sin(glfwGetTime())));

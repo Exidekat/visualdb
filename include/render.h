@@ -26,7 +26,14 @@ enum class Align {
     Center = 1, 
     Right = 2, 
     Bottom = Left, 
-    Top = Right
+    Top = Right,
+};
+
+enum class Shape {
+    Rectangle = 0,
+    Circle = 1,
+    OutlinedCircle = 2,
+
 };
 
 class Shader
@@ -103,7 +110,6 @@ private:
     size_t m_CurrentAttribute = 0;
 };
 
-
 /* Map with char(glyphname) and a struct for conveniently storing glyph data */
 struct Character {
     unsigned int TextureID;  // ID handle of the glyph texture
@@ -112,12 +118,19 @@ struct Character {
     unsigned int Advance;    // Offset to advance to next glyph
 };
 
+void RenderShape(Shape shape,
+                Shader& s, VertexArray* afuckinvertexarray, VertexBuffer* afuckinbufferarray,
+                const std::array<Align, 2>& align,
+                float x, float y, float w, float h,
+                glm::vec4 color);
+
 void RenderText(std::map<char, Character> fCharacters,
                 Shader& s,
                 const std::string& text,
                 const std::array<Align,2>& align,
                 float x, float y, float scale,
-                glm::vec3 color);
+                glm::vec4 color);
+
 std::map<char, Character> fontLoad(const char* fontPath);
 
 /* glyph shader paths */

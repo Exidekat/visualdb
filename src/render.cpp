@@ -198,16 +198,58 @@ uint32_t VertexArray::getHandle() const noexcept {
     return m_Handle;
 }
 
+/* Function for rendering a Circle or Rectangle */
+void RenderShape(Shape shape,
+    Shader& s, VertexArray* afuckinvertexarray, VertexBuffer* afuckinbufferarray,
+    const std::array<Align, 2>& align,
+    float x, float y, float w, float h,
+    glm::vec4 color) {
+    switch (shape) {
+    case Shape::Rectangle: {
+        s.use();
+        float xpos = x;
+        float ypos = y;
+        //switch (align[0]) {
+        //case Align::Left: {
+            // update VBO for them VERTS
+            std::vector<float> vertices = {
+                 xpos,     ypos,               
+                 xpos + w, ypos,           
+                 xpos + w, ypos + h,   
+                 xpos,     ypos + h,        };
+        //    break;
+        //}}
+        // update content of VBO memory
+        afuckinbufferarray->bind();
+        afuckinbufferarray->update(vertices);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        // render quad
+        glUniform4f(glGetUniformLocation(s.ID, "uColor"), color.x, color.y, color.z, color.w);
+        afuckinvertexarray->bind();
+        glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+        break;
+    }
+    case Shape::Circle: {
+        s.use();
+        glUniform2f(glGetUniformLocation(s.ID, "uCenter"), x, y);
+        glUniform4f(glGetUniformLocation(s.ID, "uColor"), color.x, color.y, color.z, color.w);
+        glUniform1f(glGetUniformLocation(s.ID, "uRadius2"), 100 * 100);
+        glBindVertexArray(afuckinvertexarray->getHandle());
+        glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+        break;
+    }}
+}
+
 /* Function for rendering line of text */
 void RenderText(std::map<char, Character> fCharacters,
                 Shader& s,
                 const std::string& text,
                 const std::array<Align, 2>& align,
                 float x, float y, float scale,
-                glm::vec3 color) {
+                glm::vec4 color) {
     // activate corresponding render state	
     s.use();
-    glUniform3f(glGetUniformLocation(s.ID, "textColor"), color.x, color.y, color.z);
+    glUniform4f(glGetUniformLocation(s.ID, "textColor"), color.x, color.y, color.z, color.w);
     glActiveTexture(GL_TEXTURE0);
     glBindVertexArray(VAO);
     // iterate through all characters

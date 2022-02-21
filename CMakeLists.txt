@@ -19,3 +19,6 @@ target_link_libraries(visualdb PUBLIC glfw::glfw)
 target_link_libraries(visualdb PUBLIC freetype::freetype)
 
 # TODO: Add tests and install targets if needed.
+
+set_target_properties(visualdb PROPERTIES
+	VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")
