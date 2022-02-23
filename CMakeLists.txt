@@ -12,11 +12,16 @@ add_subdirectory("bin/glfw")
 add_subdirectory("bin/freetype")
 
 # Add source to this project's executable.
-add_executable (visualdb "src/visualdb.cpp" "src/glad.c" "src/render.cpp" "include/render.h" "include/shape.h" "src/shape.cpp")
+add_executable (visualdb "src/visualdb.cpp" "src/glad.c" "src/render.cpp" "include/render.h" "include/shape.h" "src/shape.cpp" "src/update.cpp")
 target_include_directories(visualdb PUBLIC include/)
+target_include_directories(visualdb PUBLIC "../AppData/Local/Programs/Python/Python38/include/")
+target_include_directories(visualdb PUBLIC "C:/Python27/include/")
 target_link_libraries(visualdb PUBLIC glfw::glfw)
-# find_package(freetype REQUIRED)
 target_link_libraries(visualdb PUBLIC freetype::freetype)
+target_link_directories(visualdb PUBLIC "../AppData/Local/Programs/Python/Python38/libs/")
+#find_library(sounddevice PATHS ../AppData/Local/Programs/Python/Python38/libs/ NO_DEFAULT_PATH)
+target_link_directories(visualdb PUBLIC "C:/Python27/libs/")
+#find_library(python PATHS C:/Python27/ NO_DEFAULT_PATH)
 
 # TODO: Add tests and install targets if needed.
 

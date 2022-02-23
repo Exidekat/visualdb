@@ -1,10 +1,22 @@
 ﻿/* welcome to my special hell */
 #include "visualdb.h"
 #include "render.h"
+#include <thread>
 
 std::map<char, Character> Characters;
 unsigned int VAO, VBO;
-int fbw, fbh;
+int fbw, fbh, NRSCNTST;
+
+class Timer
+{
+public:
+    
+    double lastTime = glfwGetTime(), timer = lastTime, startTime = lastTime;
+    double deltaTime = 0, nowTime = 0;
+    int frames = 0, updates = 0;
+
+    //setTime(double t) { time.thsithis.isthis }
+};
 
 /* OpenGL debugging! */
 void APIENTRY glDebugOutput(GLenum source,
@@ -73,7 +85,10 @@ void window_size_callback(GLFWwindow* window, int width, int height)
 }
 
 int main() {
-	std::cout << "Hello VDB." << std::endl;
+    /* Initialize Python on a new thread */
+    std::thread pyListenThread(pyListen);
+
+	std::cout << "Hello VDB!" << std::endl;
 	GLFWwindow* window;
 
     /* Initialize the library */
@@ -83,7 +98,7 @@ int main() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_MAXIMIZED, true);
+    //glfwWindowHint(GLFW_MAXIMIZED, true);
     glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
 
     /* Create a windowed mode window and its OpenGL context */
@@ -109,8 +124,13 @@ int main() {
     } 
 
     /* Sets an rgba color to glClear */
-	glClearColor(1.0f,0.65f,0.15f,0.9f);
-    
+    if (NRSCNTST) {
+        glClearColor(1.0f, 0.65f, 0.15f, 0.9f);
+    }
+    else {
+        glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
+    }
+
     /* Font loading! */
     //std::map<char, Character> arial_Characters = fontLoad("fonts/arial.ttf");
     std::map<char, Character> MKDS_Characters = fontLoad("fonts/MKDS.ttf");
@@ -162,26 +182,50 @@ int main() {
     glm::vec4 middle_rgb    = rgba8_to_float(220, 75, 50, 255);        //velvet
     glm::vec4 bottom_rgb    = rgba8_to_float(162, 220, 75, 255);       //limegreen
 
-    std::string query;  // Active VDB query. should be defined by lua speech 'set query'
+    std::string query;  // Active VDB query. should be defined by lua speech 'set query' //cheatsheet notes: 1280x720 min res
+                                                                                         //
+    static double limitFPS = 1.0 / 30.0;                                                 //
+                                                                                         //
+    double lastTime = glfwGetTime(), timer = lastTime;                                   //
+    double deltaTime = 0, nowTime = 0;                                                   //
+    int frames = 0, updates = 0;                                                         //MKDS max 40 characters at 1.0f scale
+    /* Loop until the user closes the window */                                                 
+    while (!glfwWindowShouldClose(window))                                                      
+    {                                                                                           
+        glfwSetWindowSizeCallback(window, window_size_callback); //Check for window resize      
+        nowTime = glfwGetTime();
+        deltaTime += (nowTime - lastTime) / limitFPS;
+        lastTime = nowTime;
 
-    /* Loop until the user closes the window */                                                  //cheatsheet notes: 1280x720 min res
-    while (!glfwWindowShouldClose(window))                                                       //
-    {                                                                                            //
-        glfwSetWindowSizeCallback(window, window_size_callback); //Check for window resize       //
-                                                                                                 //
-        /* Render here */                                                                        //
-        glClear(GL_COLOR_BUFFER_BIT);                                                            //MKDS max 40 characters at 1.0f scale
-                       
-        RenderShape(Shape::Rectangle, shapeShader, cvao, cvbo, {Align::Center, Align::Top}, 640.0f, 720.0f, 1200.f, 640.f, { (glm::sin(glfwGetTime()) + 1.0f) / 2.0f, (glm::sin(glfwGetTime() + 104) + 1.0f) / 2.0f, (glm::sin(glfwGetTime() + 20) + 1.0f) / 2.0f, 1.0f });
-        RenderText(MKDS_Characters, glyphShader, "WELCOME TO VDB", {Align::Center, Align::Top}, 640.0f, 715.0f, 1.0f, top_rgb);
+        // Render at 30fps
+        while (deltaTime >= 1.0) {
+            update();   // - Update function
+            updates++;
+            deltaTime--;
+        }
+
+        /* Render here */                                                                       
+        glClear(GL_COLOR_BUFFER_BIT);                                                           
+
+        //top 'welcome' bar
+        RenderShape(Shape::Rectangle, shapeShader, cvao, cvbo, { Align::Center, Align::Top }, 640.0f, 720.0f, 880.f, 120.f, { 0.0f, 0.0f, 1.0f, 1.0f });
+        RenderText(MKDS_Characters, glyphShader, "WELCOME TO VDB", { Align::Center, Align::Top }, 640.0f, 715.0f, 1.0f, top_rgb);
+
+        //da main thing
+        RenderShape(Shape::Rectangle, shapeShader, cvao, cvbo, { Align::Center, Align::Center }, 640.0f, 360.0f, 880.f, 320.f, { 0.6f, 0.6f, 1.0f, 1.0f });
+        RenderShape(Shape::Rectangle, shapeShader, cvao, cvbo, { Align::Center, Align::Center }, 640.0f, 360.0f, 870.f, 310.f, { (glm::sin(glfwGetTime()) + 1.0f) / 2.0f, (glm::sin(glfwGetTime() + 104) + 1.0f) / 2.0f, (glm::sin(glfwGetTime() + 20) + 1.0f) / 2.0f, 1.0f });
         RenderText(UbuntuB_Characters, glyphShader, "The main text goin on here.", { Align::Center, Align::Center }, 640.0f, 360.0f, 1.0f, middle_rgb);
-        RenderText(UbuntuM_Characters, glyphShader, "current query: (lua stuffs goin on here)" + query, { Align::Right, Align::Bottom }, 1275.0f, 5.0f, 0.5f, bottom_rgb);
+        
+        RenderText(UbuntuM_Characters, glyphShader, "current query(lua stuffs goin on here): " + query, { Align::Right, Align::Bottom }, 1275.0f, 5.0f, 0.5f, bottom_rgb);
         RenderText(UbuntuM_Characters, glyphShader, "framebuffer size: " + std::to_string(fbw) + "px, " + std::to_string(fbh) + "px", { Align::Left, Align::Bottom }, 5.0f, 5.0f, 0.5f, bottom_rgb);
 
-        if (glfwGetTime() < 4) {
-            RenderShape(Shape::Rectangle, shapeShader, cvao, cvbo, { Align::Left, Align::Bottom }, 0.0f, 0.0f, 1280.f, 720.f, { (glm::sin(glfwGetTime()) + 1.0f) / 2.0f, (glm::sin(glfwGetTime() + 104) + 1.0f) / 2.0f, (glm::sin(glfwGetTime() + 20) + 1.0f) / 2.0f, 1.0f - (glfwGetTime()/6)});
-            RenderText(MKDS_Characters, glyphShader, "WELCOME TO", { Align::Center, Align::Center }, 640.0f, 410.0f, 3.0f, rgba8_to_float(75, 220, 205, 255 - (255 * glfwGetTime()/6)));
-            RenderText(MKDS_Characters, glyphShader, "COLORSLOL", { Align::Center, Align::Center }, 640.0f, 290.0f, 3.0f, rgba8_to_float(75, 220, 205, 255 - (255* glfwGetTime()/6)));
+        RenderShape(Shape::Rectangle, shapeShader, cvao, cvbo, { Align::Left, Align::Bottom }, 5.0f, 5.0f, 200.f, 200.f, { 1.0f, 0.2f, 0.2f, 1.0f });
+
+
+        if (glfwGetTime() < 5) {
+            RenderShape(Shape::Rectangle, shapeShader, cvao, cvbo, { Align::Left, Align::Bottom }, 0.0f, 0.0f, 1280.f, 720.f, { (glm::sin(glfwGetTime()) + 69.0f) / 2.0f, (glm::sin(glfwGetTime() + 104) + 1.0f) / 2.0f, (glm::sin(glfwGetTime() + 420.0f) + 1.0f) / 2.0f, 1.0f - (glfwGetTime()/6)});
+            RenderText(MKDS_Characters, glyphShader, "WELCOME TO", { Align::Center, Align::Bottom }, 640.0f, 310.0f, 3.0f, rgba8_to_float(75, 220, 205, 255 - (255 * glfwGetTime()/6)));
+            RenderText(MKDS_Characters, glyphShader, "VEE DEE BEE", { Align::Center, Align::Top }, 640.0f, 290.0f, 3.0f, rgba8_to_float(75, 220, 205, 255 - (255 * glfwGetTime()/6)));
         }
 
         /*shapeShader.use();
@@ -202,11 +246,17 @@ int main() {
         //glUniform1f(glGetUniformLocation(shapeShader.ID, "uRadius2"), 25 * 25);
         //glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 
-
         glfwSwapBuffers(window); //Swap front and back buffers
         glfwPollEvents(); //Poll for and process events
+        frames++; //fully rendered frame
+        if (glfwGetTime() - timer > 1.0) {
+            timer++;
+            std::cout << "FPS: " << frames << " Updates:" << updates << std::endl;
+            updates = 0, frames = 0;
+        }
     }
 
     glfwTerminate();
+    pyListenThread.join();
     return 0;
 }
