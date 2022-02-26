@@ -19,14 +19,13 @@ def process(result):
         #print('Iritanc, begon!')
         return
     now = str(datetime.now())
-    print(now + " : " + cleanResult)
+    print(now + " : " + cleanResult + "? Perchance.")
     logFile = open(r"log.txt", "a")
     logFile.write(now + " : " + cleanResult + "\n")
     logFile.close()  
-    trigger = ["vtb", "v d b"]
-    if(re.search("vtb",cleanResult)):
-        print("piss")
-
+    queryFile = open(r"query.txt", "w+")
+    queryFile.write(cleanResult)
+    queryFile.close()
 
 def int_or_str(text):
     """Helper function for argument parsing."""

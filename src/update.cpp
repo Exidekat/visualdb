@@ -3,7 +3,15 @@
 
 std::string speech;
 
+std::ifstream queryfile;
+
 void update() 
 {
-	//std::cout << PyObject_CallFunction(pPullSpeech, NULL) << std::endl;
+	queryfile.open("python/query.txt");
+	if (queryfile.is_open()) { // ok, proceed with output
+		query = std::string((std::istreambuf_iterator<char>(queryfile)), std::istreambuf_iterator<char>());
+		//std::cout << "ok the query file is loaded... " + query << std::endl;
+		queryfile.close();
+	}
+	
 }

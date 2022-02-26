@@ -127,7 +127,7 @@ void RenderShape(Shape shape,
 void RenderText(std::map<char, Character> fCharacters,
                 Shader& s,
                 const std::string& text,
-                const std::array<Align,2>& align,
+                const std::array<Align, 2>& align,
                 float x, float y, float scale,
                 glm::vec4 color);
 

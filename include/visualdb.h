@@ -22,3 +22,4 @@ constexpr glm::vec4 rgba8_to_float(unsigned char r, unsigned char g, unsigned ch
 }
 
 void update();
+inline std::string query;  // Active VDB query.

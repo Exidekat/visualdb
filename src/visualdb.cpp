@@ -5,7 +5,8 @@
 
 std::map<char, Character> Characters;
 unsigned int VAO, VBO;
-int fbw, fbh, NRSCNTST;
+int fbw, fbh;
+bool NRSCNTST = true;
 
 class Timer
 {
@@ -179,9 +180,8 @@ int main() {
     glm::vec4 top_rgb       = rgba8_to_float(75, 220, 205, 255);       //teal
     glm::vec4 middle_rgb    = rgba8_to_float(220, 75, 50, 255);        //velvet
     glm::vec4 bottom_rgb    = rgba8_to_float(162, 220, 75, 255);       //limegreen
-
-    std::string query;  // Active VDB query. should be defined by lua speech 'set query' //cheatsheet notes: 1280x720 min res
-                                                                                         //
+      
+    query = "The main text goin on here.";                                               //cheatsheet notes: 1280x720 min res
     static double limitFPS = 1.0 / 30.0;                                                 //
                                                                                          //
     double lastTime = glfwGetTime(), timer = lastTime;                                   //
@@ -208,16 +208,17 @@ int main() {
         //top 'welcome' bar
         RenderShape(Shape::Rectangle, shapeShader, cvao, cvbo, { Align::Center, Align::Top }, 640.0f, 720.0f, 880.f, 120.f, { 0.0f, 0.0f, 1.0f, 1.0f });
         RenderText(MKDS_Characters, glyphShader, "WELCOME TO VDB", { Align::Center, Align::Top }, 640.0f, 715.0f, 1.0f, top_rgb);
+        RenderText(MKDS_Characters, glyphShader, query, { Align::Center, Align::Top }, 640.0f, 650.0f, 1.0f, top_rgb);
 
         //da main thing
         RenderShape(Shape::Rectangle, shapeShader, cvao, cvbo, { Align::Center, Align::Center }, 640.0f, 360.0f, 880.f, 320.f, { 0.6f, 0.6f, 1.0f, 1.0f });
         RenderShape(Shape::Rectangle, shapeShader, cvao, cvbo, { Align::Center, Align::Center }, 640.0f, 360.0f, 870.f, 310.f, { (glm::sin(glfwGetTime()) + 1.0f) / 2.0f, (glm::sin(glfwGetTime() + 104) + 1.0f) / 2.0f, (glm::sin(glfwGetTime() + 20) + 1.0f) / 2.0f, 1.0f });
-        RenderText(UbuntuB_Characters, glyphShader, "The main text goin on here.", { Align::Center, Align::Center }, 640.0f, 360.0f, 1.0f, middle_rgb);
+        RenderText(UbuntuB_Characters, glyphShader, query, { Align::Center, Align::Center }, 640.0f, 360.0f, 1.0f, middle_rgb);
         
-        RenderText(UbuntuM_Characters, glyphShader, "current query(lua stuffs goin on here): " + query, { Align::Right, Align::Bottom }, 1275.0f, 5.0f, 0.5f, bottom_rgb);
+        RenderText(UbuntuM_Characters, glyphShader, "current query: " + query, { Align::Right, Align::Bottom }, 1275.0f, 5.0f, 0.5f, bottom_rgb);
         RenderText(UbuntuM_Characters, glyphShader, "framebuffer size: " + std::to_string(fbw) + "px, " + std::to_string(fbh) + "px", { Align::Left, Align::Bottom }, 5.0f, 5.0f, 0.5f, bottom_rgb);
 
-        RenderShape(Shape::Rectangle, shapeShader, cvao, cvbo, { Align::Left, Align::Bottom }, 5.0f, 5.0f, 200.f, 200.f, { 1.0f, 0.2f, 0.2f, 1.0f });
+        //RenderShape(Shape::Rectangle, shapeShader, cvao, cvbo, { Align::Left, Align::Bottom }, 5.0f, 5.0f, 200.f, 200.f, { 1.0f, 0.2f, 0.2f, 1.0f });
 
         if (glfwGetTime() < 5) {
             RenderShape(Shape::Rectangle, shapeShader, cvao, cvbo, { Align::Left, Align::Bottom }, 0.0f, 0.0f, 1280.f, 720.f, { (glm::sin(glfwGetTime()) + 69.0f) / 2.0f, (glm::sin(glfwGetTime() + 104) + 1.0f) / 2.0f, (glm::sin(glfwGetTime() + 420.0f) + 1.0f) / 2.0f, 1.0f - (glfwGetTime()/6)});
