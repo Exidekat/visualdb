@@ -6,6 +6,7 @@ import queue
 import sounddevice as sd
 import vosk
 import sys
+import re
 from datetime import datetime
 
 q = queue.Queue()
@@ -22,7 +23,10 @@ def process(result):
     logFile = open(r"log.txt", "a")
     logFile.write(now + " : " + cleanResult + "\n")
     logFile.close()  
-    #trigger = ["vtb", "v d b"]
+    trigger = ["vtb", "v d b"]
+    if(re.search("vtb",cleanResult)):
+        print("piss")
+
 
 def int_or_str(text):
     """Helper function for argument parsing."""

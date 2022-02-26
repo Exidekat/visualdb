@@ -21,5 +21,4 @@ constexpr glm::vec4 rgba8_to_float(unsigned char r, unsigned char g, unsigned ch
   return {r / 255.f, g / 255.f, b / 255.f, a / 255.f};
 }
 
-void pyListen();
 void update();

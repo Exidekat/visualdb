@@ -85,8 +85,6 @@ void window_size_callback(GLFWwindow* window, int width, int height)
 }
 
 int main() {
-    /* Initialize Python on a new thread */
-    std::thread pyListenThread(pyListen);
 
 	std::cout << "Hello VDB!" << std::endl;
 	GLFWwindow* window;
@@ -221,7 +219,6 @@ int main() {
 
         RenderShape(Shape::Rectangle, shapeShader, cvao, cvbo, { Align::Left, Align::Bottom }, 5.0f, 5.0f, 200.f, 200.f, { 1.0f, 0.2f, 0.2f, 1.0f });
 
-
         if (glfwGetTime() < 5) {
             RenderShape(Shape::Rectangle, shapeShader, cvao, cvbo, { Align::Left, Align::Bottom }, 0.0f, 0.0f, 1280.f, 720.f, { (glm::sin(glfwGetTime()) + 69.0f) / 2.0f, (glm::sin(glfwGetTime() + 104) + 1.0f) / 2.0f, (glm::sin(glfwGetTime() + 420.0f) + 1.0f) / 2.0f, 1.0f - (glfwGetTime()/6)});
             RenderText(MKDS_Characters, glyphShader, "WELCOME TO", { Align::Center, Align::Bottom }, 640.0f, 310.0f, 3.0f, rgba8_to_float(75, 220, 205, 255 - (255 * glfwGetTime()/6)));
@@ -257,6 +254,6 @@ int main() {
     }
 
     glfwTerminate();
-    pyListenThread.join();
+
     return 0;
 }
