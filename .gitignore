@@ -4,7 +4,7 @@
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 visualdb.exe
 python/model/*
-python/model_l/*
+python/model_b/*
 
 # User-specific files
 *.rsuser
