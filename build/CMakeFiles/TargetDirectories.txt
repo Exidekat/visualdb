@@ -1,5 +1,0 @@
-C:/Users/exide/visualdb/build/CMakeFiles/visualdb.dir
-C:/Users/exide/visualdb/build/CMakeFiles/ALL_BUILD.dir
-C:/Users/exide/visualdb/build/CMakeFiles/ZERO_CHECK.dir
-C:/Users/exide/visualdb/build/bin/glfw/CMakeFiles/ALL_BUILD.dir
-C:/Users/exide/visualdb/build/bin/freetype/CMakeFiles/ALL_BUILD.dir
