@@ -10,7 +10,7 @@ import re
 from datetime import datetime
 import socket
 
-HOST = "192.168.4.78"  # The server's hostname or IP address
+HOST = "127.0.0.1"  # The server's hostname or IP address
 PORT = 42069  # The port used by the server
 
 q = queue.Queue()
