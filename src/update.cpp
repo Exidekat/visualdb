@@ -1,8 +1,6 @@
 /* Update logic and stats from py/lua */
 #include "visualdb.h"
 
-std::string speech;
-
 std::ifstream queryfile;
 
 void update() 

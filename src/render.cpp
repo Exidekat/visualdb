@@ -200,10 +200,10 @@ uint32_t VertexArray::getHandle() const noexcept {
 
 /* Function for rendering a Circle or Rectangle */
 void RenderShape(Shape shape,
-    Shader& s, VertexArray* afuckinvertexarray, VertexBuffer* afuckinbufferarray,
-    const std::array<Align, 2>& align,
-    float x, float y, float w, float h,
-    glm::vec4 color) {
+                 Shader& s, VertexArray* pVertexArray, VertexBuffer* pVertexBuffer,
+                 const std::array<Align, 2>& align,
+                 float x, float y, float w, float h,
+                 glm::vec4 color) {
     switch (shape) {
     case Shape::Rectangle: {
         s.use();
@@ -234,12 +234,12 @@ void RenderShape(Shape shape,
              xpos + w, ypos + h,
              xpos,     ypos + h, };
         // update content of VBO memory
-        afuckinbufferarray->bind();
-        afuckinbufferarray->update(vertices);
+        pVertexBuffer->bind();
+        pVertexBuffer->update(vertices);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         // render quad
         glUniform4f(glGetUniformLocation(s.ID, "uColor"), color.x, color.y, color.z, color.w);
-        afuckinvertexarray->bind();
+        pVertexArray->bind();
         glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
         break;
     }
@@ -248,10 +248,13 @@ void RenderShape(Shape shape,
         glUniform2f(glGetUniformLocation(s.ID, "uCenter"), x, y);
         glUniform4f(glGetUniformLocation(s.ID, "uColor"), color.x, color.y, color.z, color.w);
         glUniform1f(glGetUniformLocation(s.ID, "uRadius2"), 100 * 100);
-        glBindVertexArray(afuckinvertexarray->getHandle());
+        glBindVertexArray(pVertexArray->getHandle());
         glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
         break;
-    }}
+    }
+        case Shape::OutlinedCircle:
+            break;
+    }
 }
 
 /* Function for rendering line of text */
@@ -399,7 +402,7 @@ std::map<char, Character> fontLoad(const char* fontPath) {
             texture,
             glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
             glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
-            face->glyph->advance.x
+            static_cast<unsigned int>(face->glyph->advance.x)
         };
         Characters.insert(std::pair<char, Character>(c, character));
     }

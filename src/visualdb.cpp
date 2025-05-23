@@ -3,6 +3,7 @@
 #include "render.h"
 #include <thread>
 
+
 std::map<char, Character> Characters;
 unsigned int VAO, VBO;
 int fbw, fbh;

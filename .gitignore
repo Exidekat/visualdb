@@ -6,6 +6,11 @@ visualdb.exe
 python/model/*
 python/model_l/*
 
+CMakeFiles/
+.cmake*
+
+.idea
+
 # User-specific files
 *.rsuser
 *.suo

@@ -119,10 +119,10 @@ struct Character {
 };
 
 void RenderShape(Shape shape,
-                Shader& s, VertexArray* afuckinvertexarray, VertexBuffer* afuckinbufferarray,
-                const std::array<Align, 2>& align,
-                float x, float y, float w, float h,
-                glm::vec4 color);
+                 Shader& s, VertexArray* pVertexArray, VertexBuffer* pVertexBuffer,
+                 const std::array<Align, 2>& align,
+                 float x, float y, float w, float h,
+                 glm::vec4 color);
 
 void RenderText(std::map<char, Character> fCharacters,
                 Shader& s,

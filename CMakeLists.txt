@@ -10,13 +10,14 @@ set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 
 add_subdirectory("bin/glfw")
 add_subdirectory("bin/freetype")
+link_directories("bin/glfw/libs/")
 
 # Add source to this project's executable.
 add_executable (visualdb "src/visualdb.cpp" "src/glad.c" "src/render.cpp" "include/render.h" "include/shape.h" "src/shape.cpp" "src/update.cpp")
 target_include_directories(visualdb PUBLIC include/)
 #target_include_directories(visualdb PUBLIC "../AppData/Local/Programs/Python/Python38/include/")
 #target_include_directories(visualdb PUBLIC "C:/Python27/include/")
-target_link_libraries(visualdb PUBLIC glfw::glfw)
+#target_link_libraries(visualdb PUBLIC glfw)
 target_link_libraries(visualdb PUBLIC freetype::freetype)
 #target_link_directories(visualdb PUBLIC "../AppData/Local/Programs/Python/Python38/libs/")
 #find_library(sounddevice PATHS ../AppData/Local/Programs/Python/Python38/libs/ NO_DEFAULT_PATH)
